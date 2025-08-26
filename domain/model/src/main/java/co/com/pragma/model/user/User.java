@@ -1,6 +1,6 @@
 package co.com.pragma.model.user;
 import lombok.*;
-//import lombok.NoArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
