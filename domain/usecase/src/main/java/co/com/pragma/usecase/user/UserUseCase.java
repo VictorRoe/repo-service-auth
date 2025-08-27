@@ -3,30 +3,27 @@ package co.com.pragma.usecase.user;
 import co.com.pragma.model.user.User;
 import co.com.pragma.model.user.gateways.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
-public class UserUseCase implements UserUseCaseImpl{
+public class UserUseCase implements UserUseCaseImpl {
 
-    private final TransactionalOperator txOperator;
     private final UserRepository repository;
     private static final Logger LOG = Logger.getLogger(UserUseCase.class.getName());
-
 
     @Override
     public Mono<User> registerUser(User user) {
         LOG.info("Trying register user");
         return repository.ifEmailExist(user.getEmail())
                 .flatMap(exist -> {
-                    if(exist){
+                    if (exist) {
                         LOG.warning("Email already exist");
                         return Mono.error(new IllegalArgumentException("This email already exist"));
                     }
                     LOG.info("successfully registered user");
-                    return repository.saveUser(user)
-                            .as(txOperator::transactional); // Requerimiento @Transactional
+                    return repository.saveUser(user);
+
                 });
     }
 }
