@@ -1,5 +1,8 @@
 package co.com.pragma.api;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 import co.com.pragma.api.dto.CreateUserDTO;
 import co.com.pragma.api.mapper.UserDTOMapper;
 import co.com.pragma.usecase.user.UserUseCase;
@@ -30,7 +33,7 @@ private final UserDTOMapper userMapper;
                 .doOnNext(dto -> log.debug("[registerUser] Payload recibido: {}", dto))
                 .map(dto -> {
                     String error = validateRequiredFields(dto);
-                    if (error != null) {
+                    if (nonNull(error)) {
                         log.warn("[registerUser] Validación fallida: {}", error);
                         throw new IllegalArgumentException(error);
                     }
@@ -58,16 +61,16 @@ private final UserDTOMapper userMapper;
     }
 
     private String validateRequiredFields(CreateUserDTO dto) {
-        if (dto.firstName() == null || dto.firstName().isBlank()) {
+        if (isNull(dto.firstName()) || dto.firstName().isBlank()) {
             return "El campo 'nombres' es obligatorio";
         }
-        if (dto.lastName() == null || dto.lastName().isBlank()) {
+        if (isNull(dto.lastName()) || dto.lastName().isBlank()) {
             return "El campo 'apellidos' es obligatorio";
         }
-        if (dto.email() == null || dto.email().isBlank()) {
+        if (isNull(dto.email()) || dto.email().isBlank()) {
             return "El campo 'correo_electronico' es obligatorio";
         }
-        if (dto.baseSalary() == null) {
+        if (isNull(dto.baseSalary())) {
             return "El campo 'salario_base' es obligatorio";
         }
 
