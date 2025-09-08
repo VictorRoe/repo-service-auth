@@ -21,8 +21,10 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String email;
+    private String documentId;
     private LocalDate birthDate;
     private String address;
     private String phoneNumber;
     private Long baseSalary;
+    private Long roleId;
 }

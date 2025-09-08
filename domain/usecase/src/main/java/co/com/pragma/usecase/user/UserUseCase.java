@@ -15,7 +15,7 @@ public class UserUseCase implements UserUserCaseImpl {
         return userRepository.existsByEmail(user.getEmail())
                 .flatMap(exists -> {
                     if (exists) {
-                        return Mono.error(new IllegalArgumentException("Email already exists"));
+                        return Mono.error(new IllegalArgumentException("Email ya existe"));
                     }
                     return userRepository.saveUser(user);
                 });

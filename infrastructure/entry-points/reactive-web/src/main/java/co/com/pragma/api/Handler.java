@@ -62,16 +62,19 @@ private final UserDTOMapper userMapper;
 
     private String validateRequiredFields(CreateUserDTO dto) {
         if (isNull(dto.firstName()) || dto.firstName().isBlank()) {
-            return "El campo 'nombres' es obligatorio";
+            return "El 'nombre' es obligatorio";
         }
         if (isNull(dto.lastName()) || dto.lastName().isBlank()) {
-            return "El campo 'apellidos' es obligatorio";
+            return "El 'apellido' es obligatorio";
         }
         if (isNull(dto.email()) || dto.email().isBlank()) {
-            return "El campo 'correo_electronico' es obligatorio";
+            return "El 'correo_electronico' es obligatorio";
+        }
+        if (isNull(dto.documentId()) || dto.documentId().isBlank()){
+            return "El 'documentID' es obligatorio";
         }
         if (isNull(dto.baseSalary())) {
-            return "El campo 'salario_base' es obligatorio";
+            return "El 'salario_base' es obligatorio";
         }
 
         if (!dto.email().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
