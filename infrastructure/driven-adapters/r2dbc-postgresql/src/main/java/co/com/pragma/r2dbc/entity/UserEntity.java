@@ -21,6 +21,7 @@ public class UserEntity {
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private String documentId;
     private LocalDate birthDate;
     private String address;

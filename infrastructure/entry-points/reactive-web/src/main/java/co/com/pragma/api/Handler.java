@@ -3,13 +3,22 @@ package co.com.pragma.api;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import co.com.pragma.api.dto.AuthRequestDTO;
+import co.com.pragma.api.dto.AuthResponseDTO;
 import co.com.pragma.api.dto.CreateUserDTO;
 import co.com.pragma.api.mapper.UserDTOMapper;
+import co.com.pragma.api.security.AuthenticationManager;
+import co.com.pragma.api.security.JwtUtil;
+import co.com.pragma.api.security.UserDetailsAdapter;
+import co.com.pragma.model.user.User;
 import co.com.pragma.usecase.user.UserUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -25,7 +34,22 @@ public class Handler {
 
 private final UserUseCase useCase;
 private final UserDTOMapper userMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
+    public Mono<ServerResponse> login(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(AuthRequestDTO.class)
+                .flatMap(dto -> {
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
+                    return this.authenticationManager.authenticate(authentication)
+                            .flatMap(auth -> {
+                                UserDetailsAdapter userDetails = (UserDetailsAdapter) auth.getPrincipal();
+                                String token = jwtUtil.generateToken(userDetails.getDomainUser());
+                                return ServerResponse.ok().bodyValue(new AuthResponseDTO(token));
+                            });
+                })
+                .onErrorResume(e -> ServerResponse.status(HttpStatus.UNAUTHORIZED).build());
+    }
 
     public Mono<ServerResponse> registerUser(ServerRequest request) {
         log.info("[registerUser] Petición recibida para registrar usuario");

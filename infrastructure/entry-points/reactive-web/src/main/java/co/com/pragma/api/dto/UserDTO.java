@@ -1,7 +1,5 @@
 package co.com.pragma.api.dto;
 
-import co.com.pragma.model.user.Role;
-
 import java.time.LocalDate;
 
 public record UserDTO(
