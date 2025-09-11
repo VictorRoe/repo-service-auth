@@ -7,9 +7,12 @@ public record CreateUserDTO (
         String firstName,
         String lastName,
         String email,
+        String password,
+        String documentId,
         LocalDate birthDate,
         String address,
         String phoneNumber,
-        Long baseSalary
+        Long baseSalary,
+        Long roleId
 ) {
 }

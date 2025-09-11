@@ -13,9 +13,12 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
+    private String documentId;
     private LocalDate birthDate;
     private String address;
     private String phoneNumber;
     private Long baseSalary;
+    private Role role;
 
 }

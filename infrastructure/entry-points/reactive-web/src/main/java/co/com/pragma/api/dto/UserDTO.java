@@ -7,9 +7,11 @@ public record UserDTO(
         String firstName,
         String lastName,
         String email,
+        String documentId,
         LocalDate birthDate,
         String address,
         String phoneNumber,
-        Long baseSalary
+        Long baseSalary,
+        RoleDTO role
 ) {
 }

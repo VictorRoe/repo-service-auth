@@ -31,3 +31,11 @@ adapters:
     schema: ${DB_SCHEMA}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600
+
+logging:
+  level:
+    org.springframework.security: DEBUG
