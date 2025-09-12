@@ -25,12 +25,12 @@ cors:
 
 adapters:
   r2dbc:
-    host: localhost
+    host: ${DB_HOST:postgres-db}
     port: 5432
-    database: ${DB_NAME}
-    schema: ${DB_SCHEMA}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    database: ${DB_NAME:auth_db}
+    schema: ${DB_SCHEMA:public}
+    username: ${DB_USER:admin}
+    password: ${DB_PASSWORD:12345}
 
 jwt:
   secret: ${JWT_SECRET}

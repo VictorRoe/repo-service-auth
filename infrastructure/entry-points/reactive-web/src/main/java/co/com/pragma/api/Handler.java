@@ -50,7 +50,7 @@ private final UserDTOMapper userMapper;
                 })
                 .onErrorResume(e -> ServerResponse.status(HttpStatus.UNAUTHORIZED).build());
     }
-
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'ASESOR')")
     public Mono<ServerResponse> registerUser(ServerRequest request) {
         log.info("[registerUser] Petición recibida para registrar usuario");
         return request.bodyToMono(CreateUserDTO.class)
