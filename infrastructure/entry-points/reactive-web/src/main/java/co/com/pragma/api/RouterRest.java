@@ -1,5 +1,6 @@
 package co.com.pragma.api;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
@@ -33,7 +34,8 @@ public class RouterRest {
     })
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(POST("/api/v1/usuarios"), handler::registerUser)
-                .andRoute(RequestPredicates.POST("/api/v1/login"), handler::login);
+                .andRoute(RequestPredicates.POST("/api/v1/login"), handler::login)
+                .andRoute(GET("/api/v1/users/details/{email}"), handler::getUserDetailsByEmail);
 
 
     }

@@ -32,8 +32,8 @@ import java.util.Map;
 @Slf4j
 public class Handler {
 
-private final UserUseCase useCase;
-private final UserDTOMapper userMapper;
+    private final UserUseCase useCase;
+    private final UserDTOMapper userMapper;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
@@ -50,6 +50,7 @@ private final UserDTOMapper userMapper;
                 })
                 .onErrorResume(e -> ServerResponse.status(HttpStatus.UNAUTHORIZED).build());
     }
+
     @PreAuthorize("hasAnyAuthority('ADMIN', 'ASESOR')")
     public Mono<ServerResponse> registerUser(ServerRequest request) {
         log.info("[registerUser] Petición recibida para registrar usuario");
@@ -84,6 +85,18 @@ private final UserDTOMapper userMapper;
 
     }
 
+    @PreAuthorize("isAuthenticated()")
+    public Mono<ServerResponse> getUserDetailsByEmail(ServerRequest serverRequest) {
+
+        String email = serverRequest.pathVariable("email");
+
+
+        return useCase.findByEmail(email)
+                .map(userMapper::toDetailDTO)
+                .flatMap(dto -> ServerResponse.ok().bodyValue(dto))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
     private String validateRequiredFields(CreateUserDTO dto) {
         if (isNull(dto.firstName()) || dto.firstName().isBlank()) {
             return "El 'nombre' es obligatorio";
@@ -94,7 +107,7 @@ private final UserDTOMapper userMapper;
         if (isNull(dto.email()) || dto.email().isBlank()) {
             return "El 'correo_electronico' es obligatorio";
         }
-        if (isNull(dto.documentId()) || dto.documentId().isBlank()){
+        if (isNull(dto.documentId()) || dto.documentId().isBlank()) {
             return "El 'documentID' es obligatorio";
         }
         if (isNull(dto.baseSalary())) {

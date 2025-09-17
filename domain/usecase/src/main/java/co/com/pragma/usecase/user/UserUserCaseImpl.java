@@ -7,4 +7,5 @@ import reactor.core.publisher.Mono;
 public interface UserUserCaseImpl {
 
     Mono<User> registerUser(User user);
+    Mono<User> findByEmail(String email);
 }

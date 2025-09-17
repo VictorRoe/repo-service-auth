@@ -14,10 +14,15 @@ public class UserUseCase implements UserUserCaseImpl {
     public Mono<User> registerUser(User user) {
         return userRepository.existsByEmail(user.getEmail())
                 .flatMap(exists -> {
-                    if (exists) {
+                    if (Boolean.TRUE.equals(exists)) {
                         return Mono.error(new IllegalArgumentException("Email ya existe"));
                     }
                     return userRepository.saveUser(user);
                 });
+    }
+
+    @Override
+    public Mono<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

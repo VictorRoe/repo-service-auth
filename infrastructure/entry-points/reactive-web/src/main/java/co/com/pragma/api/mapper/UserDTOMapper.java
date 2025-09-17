@@ -2,6 +2,7 @@ package co.com.pragma.api.mapper;
 
 import co.com.pragma.api.dto.CreateUserDTO;
 import co.com.pragma.api.dto.UserDTO;
+import co.com.pragma.api.dto.UserDetailDTO;
 import co.com.pragma.model.user.Role;
 import co.com.pragma.model.user.User;
 import org.mapstruct.Mapper;
@@ -14,6 +15,10 @@ public interface UserDTOMapper {
 
     @Mapping(target = "role", expression = "java(toRole(createUserDTO.roleId()))")
     User toModel(CreateUserDTO createUserDTO);
+
+    @Mapping(target = "fullName", expression = "java(user.getFirstName() + \" \" + user.getLastName())")
+    @Mapping(target = "baseSalary", source = "baseSalary")
+    UserDetailDTO toDetailDTO(User user);
 
     default Role toRole(Long roleId) {
         if (roleId == null) return null;
