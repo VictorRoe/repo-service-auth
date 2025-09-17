@@ -1,5 +1,5 @@
 server:
-  port: 8083
+  port: ${PORT}
 spring:
   application:
     name: "Authentication"
@@ -25,12 +25,12 @@ cors:
 
 adapters:
   r2dbc:
-    host: ${DB_HOST:localhost}
-    port: ${DB_PORT:5433}
-    database: ${DB_NAME:auth_db}
-    schema: ${DB_SCHEMA:public}
-    username: ${DB_USERNAME:admin}
-    password: ${DB_PASSWORD:12345}
+    host: ${DB_HOST}
+    port: ${DB_PORT}
+    database: ${DB_NAME}
+    schema: ${DB_SCHEMA}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
 jwt:
   secret: ${JWT_SECRET}
