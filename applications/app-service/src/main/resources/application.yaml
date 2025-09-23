@@ -1,5 +1,5 @@
 server:
-  port: ${PORT}
+  port: 8080
 spring:
   application:
     name: "Authentication"
@@ -11,6 +11,10 @@ spring:
       path: "/h2"
   profiles:
     include: null
+  r2dbc:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
 management:
   endpoints:
     web:
@@ -23,14 +27,8 @@ management:
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080,http://localhost:8083,http://localhost:8087"
 
-adapters:
-  r2dbc:
-    host: ${DB_HOST}
-    port: ${DB_PORT}
-    database: ${DB_NAME}
-    schema: ${DB_SCHEMA}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+internal:
+  api-key: ${INTERNAL_API_KEY}
 
 jwt:
   secret: ${JWT_SECRET}
@@ -38,4 +36,5 @@ jwt:
 
 logging:
   level:
+    root: INFO
     org.springframework.security: DEBUG

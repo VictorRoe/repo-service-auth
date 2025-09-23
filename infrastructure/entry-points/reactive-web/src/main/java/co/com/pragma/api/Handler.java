@@ -10,7 +10,6 @@ import co.com.pragma.api.mapper.UserDTOMapper;
 import co.com.pragma.api.security.AuthenticationManager;
 import co.com.pragma.api.security.JwtUtil;
 import co.com.pragma.api.security.UserDetailsAdapter;
-import co.com.pragma.model.user.User;
 import co.com.pragma.usecase.user.UserUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.beans.factory.annotation.Value;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -31,6 +31,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class Handler {
+    
+    @Value("${internal.api-key}")
+    private String internalApiKey;
 
     private final UserUseCase useCase;
     private final UserDTOMapper userMapper;
@@ -87,7 +90,12 @@ public class Handler {
 
     @PreAuthorize("isAuthenticated()")
     public Mono<ServerResponse> getUserDetailsByEmail(ServerRequest serverRequest) {
-
+            
+        String apiKeyHeader = serverRequest.headers().firstHeader("X-API-KEY");
+            if (!internalApiKey.equals(apiKeyHeader)) {
+                return ServerResponse.status(HttpStatus.UNAUTHORIZED).build();
+        }
+            
         String email = serverRequest.pathVariable("email");
 
 

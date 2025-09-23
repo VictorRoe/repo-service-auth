@@ -23,14 +23,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - PORT=8080
-      - DB_HOST=auth-db
-      - DB_NAME=auth_db
-      - DB_USERNAME=admin
+      - DB_URL=${DB_URL_PODMAN}
+      - DB_USER=admin
       - DB_PASSWORD=${AUTH_DB_PASSWORD}
-      - DB_SCHEMA=public
-      - DB_PORT=${DB_PORT}
       - JWT_SECRET=${JWT_SECRET}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY}
+    volumes:
+      - ${USERPROFILE}/.aws:/home/appuser/.aws:ro
     depends_on:
       auth-db:
         condition: service_healthy
