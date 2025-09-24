@@ -31,7 +31,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class Handler {
-    
+
     @Value("${internal.api-key}")
     private String internalApiKey;
 
@@ -88,14 +88,13 @@ public class Handler {
 
     }
 
-    @PreAuthorize("isAuthenticated()")
     public Mono<ServerResponse> getUserDetailsByEmail(ServerRequest serverRequest) {
-            
-        String apiKeyHeader = serverRequest.headers().firstHeader("X-API-KEY");
-            if (!internalApiKey.equals(apiKeyHeader)) {
-                return ServerResponse.status(HttpStatus.UNAUTHORIZED).build();
+
+        String apiKeyHeader = serverRequest.headers().header("X-API-KEY").stream().findFirst().orElse(null);
+        if (!internalApiKey.equals(apiKeyHeader)) {
+            return ServerResponse.status(HttpStatus.UNAUTHORIZED).build();
         }
-            
+
         String email = serverRequest.pathVariable("email");
 
 
