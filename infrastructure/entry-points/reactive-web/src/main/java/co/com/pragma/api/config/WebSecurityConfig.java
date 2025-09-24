@@ -30,9 +30,10 @@ public class WebSecurityConfig {
         return http
                 .securityMatcher(new OrServerWebExchangeMatcher(
                         new PathPatternParserServerWebExchangeMatcher("/api/v1/login", HttpMethod.POST),
+                        new PathPatternParserServerWebExchangeMatcher("/api/v1/users/details/**"),
+                        new PathPatternParserServerWebExchangeMatcher("/actuator/health"),
                         new PathPatternParserServerWebExchangeMatcher("/swagger-ui/**", HttpMethod.GET),
-                        new PathPatternParserServerWebExchangeMatcher("/v3/api-docs/**", HttpMethod.GET),
-                        new PathPatternParserServerWebExchangeMatcher("/api/v1/users/details/**")
+                        new PathPatternParserServerWebExchangeMatcher("/v3/api-docs/**", HttpMethod.GET)
                 ))
                 .authorizeExchange(exchange -> exchange.anyExchange().permitAll())
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
