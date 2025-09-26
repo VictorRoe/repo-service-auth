@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 public interface UserDTOMapper {
 
     UserDTO toResponse(User user);
-
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", expression = "java(toRole(createUserDTO.roleId()))")
     User toModel(CreateUserDTO createUserDTO);
 

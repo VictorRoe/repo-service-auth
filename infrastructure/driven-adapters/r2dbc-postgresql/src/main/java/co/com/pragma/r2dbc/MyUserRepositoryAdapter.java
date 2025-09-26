@@ -23,6 +23,7 @@ public class MyUserRepositoryAdapter extends ReactiveAdapterOperations<
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     public MyUserRepositoryAdapter(MyUserReactiveRepository repository, ObjectMapper mapper, TransactionalOperator transactionalOperator, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         super(repository, mapper, d -> mapper.map(d, User.class));
         this.transactionalOperator = transactionalOperator;
@@ -30,42 +31,25 @@ public class MyUserRepositoryAdapter extends ReactiveAdapterOperations<
         this.passwordEncoder = passwordEncoder;
     }
 
+
     @Override
     public Mono<User> saveUser(User user) {
-
         String encodedPassword = passwordEncoder.encode(user.getPassword());
 
-        UserEntity entity = new UserEntity(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                encodedPassword,
-                user.getDocumentId(),
-                user.getBirthDate(),
-                user.getAddress(),
-                user.getPhoneNumber(),
-                user.getBaseSalary(),
-                user.getRole().getId()
-        );
+        UserEntity entity = new UserEntity();
+        entity.setFirstName(user.getFirstName());
+        entity.setLastName(user.getLastName());
+        entity.setEmail(user.getEmail());
+        entity.setPassword(encodedPassword);
+        entity.setDocumentId(user.getDocumentId());
+        entity.setBirthDate(user.getBirthDate());
+        entity.setAddress(user.getAddress());
+        entity.setPhoneNumber(user.getPhoneNumber());
+        entity.setBaseSalary(user.getBaseSalary());
+        entity.setRoleId(user.getRole().getId());
 
         return repository.save(entity)
-                .flatMap(savedEntity ->
-                        roleRepository.findById(savedEntity.getRoleId())
-                                .map(role -> new User(
-                                        savedEntity.getId(),
-                                        savedEntity.getFirstName(),
-                                        savedEntity.getLastName(),
-                                        savedEntity.getEmail(),
-                                        savedEntity.getPassword(),
-                                        savedEntity.getDocumentId(),
-                                        savedEntity.getBirthDate(),
-                                        savedEntity.getAddress(),
-                                        savedEntity.getPhoneNumber(),
-                                        savedEntity.getBaseSalary(),
-                                        role
-                                ))
-                )
+                .flatMap(this::toDomain)
                 .as(transactionalOperator::transactional);
     }
 
@@ -77,21 +61,23 @@ public class MyUserRepositoryAdapter extends ReactiveAdapterOperations<
     @Override
     public Mono<User> findByEmail(String email) {
         return repository.findByEmail(email)
-                .flatMap(userEntity ->
-                        roleRepository.findById(userEntity.getRoleId())
-                                .map(role -> new User(
-                                        userEntity.getId(),
-                                        userEntity.getFirstName(),
-                                        userEntity.getLastName(),
-                                        userEntity.getEmail(),
-                                        userEntity.getPassword(),
-                                        userEntity.getDocumentId(),
-                                        userEntity.getBirthDate(),
-                                        userEntity.getAddress(),
-                                        userEntity.getPhoneNumber(),
-                                        userEntity.getBaseSalary(),
-                                        role
-                                ))
-                );
+                .flatMap(this::toDomain);
+    }
+
+    private Mono<User> toDomain(UserEntity userEntity) {
+        return roleRepository.findById(userEntity.getRoleId())
+                .map(role -> new User(
+                        userEntity.getId(),
+                        userEntity.getFirstName(),
+                        userEntity.getLastName(),
+                        userEntity.getEmail(),
+                        userEntity.getPassword(),
+                        userEntity.getDocumentId(),
+                        userEntity.getBirthDate(),
+                        userEntity.getAddress(),
+                        userEntity.getPhoneNumber(),
+                        userEntity.getBaseSalary(),
+                        role
+                ));
     }
 }
